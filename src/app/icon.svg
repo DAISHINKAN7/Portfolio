@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#15181A"/>
+  <rect x="10" y="14" width="30" height="3" fill="#0E5A63"/>
+  <text x="10" y="46"
+        font-family="'IBM Plex Sans Condensed', 'Helvetica Neue', Arial, sans-serif"
+        font-size="34" font-weight="600" letter-spacing="-1.5" fill="#F1F2EF">KA</text>
+</svg>
