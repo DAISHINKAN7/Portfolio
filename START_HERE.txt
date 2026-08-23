@@ -1,0 +1,53 @@
+KUNAL AJGAONKAR — PORTFOLIO
+===========================
+
+RUN IT
+------
+  1.  Install Node.js 20+  ->  https://nodejs.org
+  2.  Open a terminal in this folder
+  3.  git init          (optional, silences a Next.js root warning)
+  4.  npm install
+  5.  npm run dev
+  6.  Open  http://localhost:3000
+
+BUILD FOR PRODUCTION
+--------------------
+  npm run build
+  npm start
+
+DEPLOY (easiest)
+----------------
+  npx vercel --prod
+  ...or push to GitHub and import the repo at vercel.com
+
+THREE THINGS TO EDIT BEFORE PUBLISHING
+--------------------------------------
+  src/content/site.ts
+    - profile.linkedin  : currently null. Paste your LinkedIn URL to switch
+                          the link on site-wide. Nothing renders while null.
+    - profile.siteUrl   : the public address the site will live at, e.g.
+                          https://kunal-portfolio.vercel.app  or your own
+                          domain. Drives canonical URLs, Open Graph tags,
+                          sitemap.xml and robots.txt. Deploy once, copy the
+                          URL Vercel prints, paste it here, redeploy.
+  src/app/opengraph-image.png  (optional)
+    - a 1200x630 PNG. This is the picture LinkedIn / Slack / email show when
+      someone pastes a link to your site. Just save a file with that exact
+      name at that exact path -- Next.js picks it up automatically, no code
+      change needed. Keep it simple: name, role, lots of margin.
+
+All copy and data live in  src/content/  — you never need to open a component
+to change a number. Full guide in README.md.
+
+DEPLOY IN FIVE MINUTES (Vercel)
+-------------------------------
+  1.  cd into this folder
+  2.  git init && git add -A && git commit -m "portfolio"
+  3.  npx vercel            -> answer the prompts, accept all defaults
+  4.  npx vercel --prod     -> gives you the live URL
+  5.  Copy that URL into src/content/site.ts -> profile.siteUrl
+  6.  git commit -am "set siteUrl" && npx vercel --prod
+
+NOTE: `npm run dev` prints one warning from the Recharts library
+("non-boolean attribute d"). It is cosmetic, comes from the library not this
+code, and does not appear in the production build. Safe to ignore.
