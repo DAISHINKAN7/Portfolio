@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { profile } from '@/content/site';
+import { EmailButton } from '@/components/email-button';
 
 export const metadata: Metadata = {
   title: 'Contact',
@@ -64,13 +65,13 @@ export default function ContactPage() {
         </div>
       </dl>
 
-      <div className="mt-12 flex flex-wrap gap-3">
-        <a href={`mailto:${profile.email}`} className="btn btn-primary">
-          Send an email
-        </a>
-        <Link href="/projects" className="btn btn-ghost">
-          Browse the work
-        </Link>
+      <div className="mt-12">
+        <EmailButton email={profile.email} />
+        <div className="mt-4">
+          <Link href="/projects" className="btn btn-ghost">
+            Browse the work
+          </Link>
+        </div>
       </div>
     </div>
   );

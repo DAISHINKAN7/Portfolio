@@ -9,10 +9,10 @@ export const profile = {
   // TODO(kunal): paste your LinkedIn profile URL here to switch the link on
   // site-wide (header, footer, contact, resume). Leave it null and no dead
   // link is ever rendered.
-  linkedin: null as string | null,
+  linkedin: "https://www.linkedin.com/in/kunalajgaonkar/",
   resumePdf: '/Kunal_Ajgaonkar_Resume.pdf',
   photo: '/kunal.jpg',
-  siteUrl: 'https://kunalajgaonkar.com',
+  siteUrl: 'https://kunal-ajgaonkar-portfolio.vercel.app',
   positioning:
     'I build AI systems where the architecture is the contribution — multi-agent retrieval, multimodal deep learning, spatiotemporal forecasting and domain NLP — and I measure them honestly enough to say where they fail.',
   heroLines: [
