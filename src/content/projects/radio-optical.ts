@@ -15,7 +15,7 @@ export const radioOptical: Project = {
   status: 'Complete benchmark · live demo available',
   statusTone: 'live',
   repo: 'https://github.com/DAISHINKAN7/Radio-Optical-Classification',
-  demo: 'https://radio-optical-frontend-8ccm18jfu.vercel.app/',
+  demo: 'https://radio-optical-frontend.vercel.app/',
   scale: '~6,000 lines of Python across 25+ modules',
   headline: {
     value: '97.60% ± 0.31',
