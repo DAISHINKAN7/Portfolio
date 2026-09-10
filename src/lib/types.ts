@@ -42,6 +42,14 @@ export type Block =
   | { type: 'code'; lang: string; file: string; why: string; code: string }
   | { type: 'diagram'; id: string; caption: string; prov?: Provenance }
   | { type: 'chart'; id: string; caption: string; prov?: Provenance }
+  | {
+      type: 'image';
+      src: string;
+      alt: string;
+      caption: string;
+      prov?: Provenance;
+      theme?: 'dark' | 'light';
+    }
   | { type: 'definitions'; items: { term: string; body: string }[] };
 
 export type Section = {

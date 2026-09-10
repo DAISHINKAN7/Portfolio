@@ -150,14 +150,14 @@ export const skillGroups: SkillGroup[] = [
     name: 'Agentic AI & retrieval systems',
     blurb: 'Multi-agent orchestration, RAG architecture, and retrieval that fuses dense and symbolic paths.',
     items: [
-      { name: 'Multi-agent orchestration', evidence: ['astroguard'] },
+      { name: 'Multi-agent orchestration', evidence: ['astroguard', 'revenueos'] },
       { name: 'Retrieval-augmented generation', evidence: ['astroguard'] },
       { name: 'Knowledge graphs', evidence: ['astroguard', 'ssa-intel'] },
       { name: 'LanceDB / vector indexing', evidence: ['astroguard'] },
       { name: 'NetworkX / graph traversal', evidence: ['astroguard'] },
       { name: 'Neo4j', evidence: ['ssa-intel'] },
-      { name: 'Local LLM inference & quantization', evidence: ['astroguard'] },
-      { name: 'Schema-forced structured output', evidence: ['astroguard'] },
+      { name: 'Local LLM inference & quantization', evidence: ['astroguard', 'revenueos'] },
+      { name: 'Schema-forced structured output', evidence: ['astroguard', 'revenueos'] },
     ],
   },
   {
@@ -202,12 +202,12 @@ export const skillGroups: SkillGroup[] = [
     name: 'Classical ML & quantitative modelling',
     blurb: 'Feature engineering, gradient boosting, state-space models and convex optimisation.',
     items: [
-      { name: 'XGBoost', evidence: ['adaptive-beta'] },
+      { name: 'XGBoost', evidence: ['adaptive-beta', 'revenueos'] },
       { name: 'scikit-learn', evidence: ['adaptive-beta', 'radio-optical-classification'] },
       { name: 'Hidden Markov models', evidence: ['adaptive-beta'] },
       { name: 'Kalman filtering', evidence: ['adaptive-beta'] },
       { name: 'CVXPY / convex optimisation', evidence: ['adaptive-beta'] },
-      { name: 'SHAP / model explanation', evidence: ['adaptive-beta'] },
+      { name: 'SHAP / model explanation', evidence: ['adaptive-beta','revenueos'] },
       { name: 'Walk-forward validation', evidence: ['adaptive-beta'] },
     ],
   },
@@ -221,6 +221,9 @@ export const skillGroups: SkillGroup[] = [
       { name: 'Ablation design', evidence: ['eco-rewind'] },
       { name: 'Leakage detection & disclosure', evidence: ['radio-optical-classification', 'eco-rewind', 'adaptive-beta'] },
       { name: 'Per-stage telemetry', evidence: ['astroguard'] },
+      { name: 'Off-policy evaluation (IPS / SNIPS / DR)', evidence: ['revenueos'] },
+      { name: 'Propensity logging & exploration design', evidence: ['revenueos'] },
+      { name: 'Synthetic environment design', evidence: ['revenueos'] },
     ],
   },
   {
@@ -400,14 +403,15 @@ export const volunteering = {
 
 /** Domain → project edges for the engineering landscape map. */
 export const landscape: { id: string; label: string; projects: string[] }[] = [
-  { id: 'agentic', label: 'Agentic AI', projects: ['astroguard'] },
+  { id: 'agentic', label: 'Agentic AI', projects: ['astroguard', 'revenueos'] },
   { id: 'retrieval', label: 'Retrieval & RAG', projects: ['astroguard'] },
   { id: 'graphs', label: 'Knowledge Graphs', projects: ['astroguard', 'ssa-intel'] },
   { id: 'nlp', label: 'NLP', projects: ['ssa-intel', 'astroguard'] },
   { id: 'dl', label: 'Deep Learning', projects: ['radio-optical-classification', 'eco-rewind', 'ssa-intel'] },
   { id: 'cv', label: 'Computer Vision', projects: ['radio-optical-classification', 'eco-rewind'] },
   { id: 'multimodal', label: 'Multimodal', projects: ['radio-optical-classification', 'eco-rewind'] },
-  { id: 'quant', label: 'Quantitative ML', projects: ['adaptive-beta'] },
+  { id: 'quant', label: 'Quantitative ML', projects: ['adaptive-beta', 'revenueos'] },
+  { id: 'systems', label: 'Production Systems', projects: ['revenueos'] },
   { id: 'sciai', label: 'Scientific AI', projects: ['eco-rewind', 'radio-optical-classification', 'astroguard'] },
-  { id: 'eval', label: 'Evaluation Design', projects: ['radio-optical-classification', 'eco-rewind', 'adaptive-beta', 'ssa-intel'] },
+  { id: 'eval', label: 'Evaluation Design', projects: ['radio-optical-classification', 'eco-rewind', 'adaptive-beta', 'ssa-intel', 'revenueos'] },
 ];

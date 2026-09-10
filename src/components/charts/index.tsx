@@ -381,3 +381,83 @@ export function SsaF1() {
     </Shell>
   );
 }
+
+export function RevenueosSplit() {
+  const data = [
+    { k: 'FREE_SHIPPING', conv: 0, econ: 32.8 },
+    { k: 'DO_NOTHING', conv: 0, econ: 26.0 },
+    { k: 'DELAYED_RETRY', conv: 0, econ: 15.9 },
+    { k: 'SMALL_DISCOUNT', conv: 0, econ: 13.1 },
+    { k: 'MEDIUM_DISCOUNT', conv: 32.1, econ: 2.2 },
+  ];
+  return (
+    <Shell h={320}>
+      <BarChart data={data} layout="vertical" margin={{ left: 150, right: 40, top: 8, bottom: 8 }}>
+        <CartesianGrid horizontal={false} stroke={RULE} />
+        <XAxis type="number" unit="%" {...axis} />
+        <YAxis type="category" dataKey="k" width={148} {...axis} tick={{ ...axis.tick, fontSize: 10 }} />
+        <Tooltip {...tip} formatter={(v: number, n: string) => [`${v}%`, n]} />
+        <Bar dataKey="conv" name="Conversion-max" fill={CAUTION} maxBarSize={14} />
+        <Bar dataKey="econ" name="Economics-max" fill={ACCENT} maxBarSize={14} />
+      </BarChart>
+    </Shell>
+  );
+}
+
+export function RevenueosPolicies() {
+  const data = [
+    { k: 'ORACLE_ECONOMIC', v: 912.86, ours: false },
+    { k: 'REVENUEOS', v: 838.48, ours: true },
+    { k: 'RULES', v: 819.41, ours: false },
+    { k: 'MODEL_CONVERSION_MAX', v: 806.15, ours: false },
+    { k: 'DO_NOTHING', v: 761.25, ours: false },
+    { k: 'FLAT_10_PERCENT', v: 573.06, ours: false },
+  ];
+  return (
+    <Shell h={330}>
+      <BarChart data={data} layout="vertical" margin={{ left: 176, right: 66, top: 8, bottom: 8 }}>
+        <CartesianGrid horizontal={false} stroke={RULE} />
+        <XAxis type="number" domain={[500, 950]} {...axis} />
+        <YAxis type="category" dataKey="k" width={174} {...axis} tick={{ ...axis.tick, fontSize: 10 }} />
+        <Tooltip {...tip} formatter={(v: number) => [`₹${v} net contribution / opportunity`, '']} />
+        <Bar dataKey="v" maxBarSize={18}>
+          {data.map((d, i) => (
+            <Cell key={i} fill={d.ours ? ACCENT : GREY} />
+          ))}
+          <LabelList
+            dataKey="v"
+            position="right"
+            formatter={(v: number) => `₹${v}`}
+            style={{ fill: INK, fontSize: 10.5, fontFamily: 'var(--font-mono), monospace' }}
+          />
+        </Bar>
+      </BarChart>
+    </Shell>
+  );
+}
+
+export function RevenueosConversion() {
+  const data = [
+    { k: 'ORACLE_ECONOMIC', v: 46.34 },
+    { k: 'MODEL_CONVERSION_MAX', v: 45.6 },
+    { k: 'REVENUEOS', v: 43.85 },
+    { k: 'RULES', v: 41.53 },
+    { k: 'FLAT_10_PERCENT', v: 38.21 },
+    { k: 'DO_NOTHING', v: 34.5 },
+  ];
+  return (
+    <Shell h={300}>
+      <BarChart data={data} layout="vertical" margin={{ left: 176, right: 60, top: 8, bottom: 8 }}>
+        <CartesianGrid horizontal={false} stroke={RULE} />
+        <XAxis type="number" domain={[30, 50]} unit="%" {...axis} />
+        <YAxis type="category" dataKey="k" width={174} {...axis} tick={{ ...axis.tick, fontSize: 10 }} />
+        <Tooltip {...tip} formatter={(v: number) => [`${v}% conversion`, '']} />
+        <Bar dataKey="v" maxBarSize={18}>
+          {data.map((d, i) => (
+            <Cell key={i} fill={d.k === 'MODEL_CONVERSION_MAX' ? CAUTION : d.k === 'REVENUEOS' ? ACCENT : GREY} />
+          ))}
+        </Bar>
+      </BarChart>
+    </Shell>
+  );
+}

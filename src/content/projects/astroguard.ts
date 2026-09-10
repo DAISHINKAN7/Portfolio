@@ -47,7 +47,7 @@ export const astroguard: Project = {
   ],
   heroDiagram: 'astroguard-swarm',
   accentIndex: 0,
-  related: ['ssa-intel', 'radio-optical-classification'],
+  related: ['ssa-intel', 'revenueos'],
   sections: [
     {
       id: 'problem',

@@ -29,6 +29,9 @@ const CHARTS: Record<string, React.ComponentType> = {
   'beta-stress': load('BetaStress'),
   'eco-attribution': load('EcoAttribution'),
   'ssa-f1': load('SsaF1'),
+  'revenueos-split': load('RevenueosSplit'),
+  'revenueos-policies': load('RevenueosPolicies'),
+  'revenueos-conversion': load('RevenueosConversion'),
 };
 
 export function Chart({ id }: { id: string }) {

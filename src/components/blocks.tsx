@@ -8,6 +8,7 @@ import { RadioArchitectures, RadioPipeline, RadioPreprocessing } from './diagram
 import { BetaDecision, BetaLayers } from './diagrams/beta';
 import { EcoArchitectures, EcoConcept, EcoPipeline } from './diagrams/eco';
 import { SsaFunnel, SsaLayers, SsaNer } from './diagrams/ssa';
+import { RevenueosAuthority, RevenueosBoundary } from './diagrams/revenueos';
 
 /* Diagrams are pure SVG and render on the server. */
 const DIAGRAMS: Record<string, React.ComponentType> = {
@@ -24,6 +25,8 @@ const DIAGRAMS: Record<string, React.ComponentType> = {
   'ssa-ner': SsaNer,
   'ssa-funnel': SsaFunnel,
   'ssa-layers': SsaLayers,
+  'revenueos-authority': RevenueosAuthority,
+  'revenueos-boundary': RevenueosBoundary,
 };
 
 export function Diagram({ id }: { id: string }) {
@@ -209,6 +212,25 @@ function BlockView({ block: b }: { block: Block }) {
           <figcaption className="mt-3 max-w-measure text-micro leading-relaxed text-ink-2">
             <span className="data text-[0.65rem] uppercase tracking-[0.12em] text-accent">Why this matters — </span>
             {b.why}
+          </figcaption>
+        </figure>
+      );
+
+    case 'image':
+      return (
+        <figure className="my-10">
+          <div
+            className={`border p-3 sm:p-5 ${
+              b.theme === 'dark' ? 'border-ink bg-[#0B1120]' : 'border-rule bg-surface'
+            }`}
+          >
+            {/* Project-authored SVGs: intrinsically sized, no optimisation needed. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={b.src} alt={b.alt} className="h-auto w-full" loading="lazy" />
+          </div>
+          <figcaption className="mt-3 flex flex-wrap items-start justify-between gap-3">
+            <span className="text-micro leading-relaxed text-ink-2 max-w-measure">{b.caption}</span>
+            {b.prov && <Prov level={b.prov} />}
           </figcaption>
         </figure>
       );
