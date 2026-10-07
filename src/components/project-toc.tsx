@@ -1,10 +1,22 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 export function ProjectToc({ sections }: { sections: { id: string; nav: string }[] }) {
   const [active, setActive] = useState(sections[0]?.id);
   const [open, setOpen] = useState(false);
+  const list = useRef<HTMLOListElement>(null);
+  const marker = useRef<HTMLSpanElement>(null);
+
+  // One accent hairline that glides to the active entry.
+  useLayoutEffect(() => {
+    const a = list.current?.querySelector<HTMLElement>(`a[href="#${active}"]`);
+    const m = marker.current;
+    if (!a || !m) return;
+    m.style.transform = `translate3d(0, ${a.offsetTop}px, 0)`;
+    m.style.height = `${a.offsetHeight}px`;
+    m.style.opacity = '1';
+  }, [active]);
 
   useEffect(() => {
     const els = sections.map((s) => document.getElementById(s.id)).filter(Boolean) as HTMLElement[];
@@ -31,7 +43,8 @@ export function ProjectToc({ sections }: { sections: { id: string; nav: string }
       {/* Desktop rail */}
       <nav className="sticky top-24 hidden lg:block" aria-label="Sections">
         <p className="eyebrow mb-4">Contents</p>
-        <ol className="space-y-0.5 border-l border-rule">
+        <ol ref={list} className="relative space-y-0.5 border-l border-rule">
+          <span ref={marker} className="toc-marker" aria-hidden />
           {sections.map((s, i) => {
             const on = active === s.id;
             return (
@@ -39,8 +52,8 @@ export function ProjectToc({ sections }: { sections: { id: string; nav: string }
                 <a
                   href={`#${s.id}`}
                   aria-current={on ? 'true' : undefined}
-                  className={`-ml-px flex items-baseline gap-3 border-l py-1.5 pl-4 text-micro transition-colors duration-180 ${
-                    on ? 'border-accent text-accent' : 'border-transparent text-ink-2 hover:text-ink'
+                  className={`-ml-px flex items-baseline gap-3 border-l border-transparent py-1.5 pl-4 text-micro transition-[color,padding] duration-320 ${
+                    on ? 'pl-5 text-accent' : 'text-ink-2 hover:pl-5 hover:text-ink'
                   }`}
                 >
                   <span className="data text-[0.65rem] text-ink-3">{String(i + 1).padStart(2, '0')}</span>
