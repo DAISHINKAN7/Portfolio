@@ -11,6 +11,8 @@ import './globals.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { profile } from '@/content/site';
+import { MotionRuntime, motionBootScript } from '@/components/motion/motion-runtime';
+import { BootScreen } from '@/components/motion/boot';
 
 export const metadata: Metadata = {
   metadataBase: new URL(profile.siteUrl),
@@ -48,8 +50,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: motionBootScript }} />
+      </head>
       <body>
+        <BootScreen />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:border focus:border-ink focus:bg-paper focus:px-4 focus:py-2 focus:font-mono focus:text-micro"
@@ -59,6 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         <main id="main">{children}</main>
         <SiteFooter />
+        <MotionRuntime />
       </body>
     </html>
   );

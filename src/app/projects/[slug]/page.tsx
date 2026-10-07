@@ -8,6 +8,8 @@ import { Blocks, Diagram } from '@/components/blocks';
 import { ProjectToc } from '@/components/project-toc';
 import { ArrowLink, MetricStrip, Prov, ProvKey } from '@/components/ui';
 import { STATUS } from '@/components/project-cards';
+import { ProjectTrace } from '@/components/viz/project-trace';
+import { CountUp } from '@/components/motion/count-up';
 
 /**
  * Next 15+ passes `params` as a Promise. Awaiting it also works under Next 14,
@@ -62,7 +64,9 @@ export default async function ProjectPage({ params }: Params) {
                 {p.statusTone === 'live' ? 'live demo' : p.statusTone}
               </span>
             </div>
-            <h1 className="display-xl mt-5">{p.wordmark}</h1>
+            <h1 className="display-xl mt-5" style={{ viewTransitionName: 'vt-title' }}>
+              {p.wordmark}
+            </h1>
             <p className="display-m mt-4 max-w-2xl font-normal text-ink-2">{p.subtitle}</p>
             <p className="lede mt-6 text-ink">{p.hook}</p>
 
@@ -90,7 +94,7 @@ export default async function ProjectPage({ params }: Params) {
             <div className="border-t border-ink pt-5">
               <p className="eyebrow mb-3">Strongest result</p>
               <p className={`data text-4xl leading-none ${p.headline.tone === 'caution' ? 'text-caution' : 'text-ink'}`}>
-                {p.headline.value}
+                <CountUp value={p.headline.value} />
               </p>
               <p className="mt-3 max-w-sm text-micro leading-relaxed text-ink-2">{p.headline.label}</p>
               {p.headline.note && (
@@ -119,8 +123,18 @@ export default async function ProjectPage({ params }: Params) {
           </aside>
         </div>
 
-        <div className="mt-12 border border-rule bg-surface p-4 sm:p-6">
-          <Diagram id={p.heroDiagram} />
+        <div
+          className="mt-12 border border-rule bg-surface p-4 sm:p-6"
+          style={{ viewTransitionName: 'vt-fig' }}
+          data-tilt="2"
+        >
+          <div data-depth>
+            <Diagram id={p.heroDiagram} />
+          </div>
+        </div>
+
+        <div className="mt-8">
+          <ProjectTrace slug={p.slug} />
         </div>
 
         <div className="mt-10">

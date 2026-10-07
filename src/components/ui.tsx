@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import type { Metric, Provenance } from '@/lib/types';
+import { CountUp } from './motion/count-up';
 
 /* ------------------------------------------------------------------ */
 /* Provenance — the site's signature device.                           */
@@ -67,16 +68,35 @@ export function SectionHead({
   right?: React.ReactNode;
 }) {
   return (
-    <header className="rule-t pt-6 mb-10">
+    <header className="relative mb-10 pt-6" data-reveal="group">
+      <span className="reveal-rule" aria-hidden />
       <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-3">
         <div className="flex items-baseline gap-4">
-          {index && <span className="data text-label text-accent">{index}</span>}
-          {eyebrow && <span className="eyebrow">{eyebrow}</span>}
+          {index && (
+            <span className="data text-label text-accent" data-r style={{ ['--rd' as string]: 0 }}>
+              {index}
+            </span>
+          )}
+          {eyebrow && (
+            <span className="eyebrow" data-r style={{ ['--rd' as string]: 1 }}>
+              {eyebrow}
+            </span>
+          )}
         </div>
-        {right}
+        {right && (
+          <div data-r style={{ ['--rd' as string]: 3 }}>
+            {right}
+          </div>
+        )}
       </div>
-      <h2 className="display-l mt-5 max-w-3xl">{title}</h2>
-      {intro && <p className="lede mt-4">{intro}</p>}
+      <h2 className="display-l mt-5 max-w-3xl" data-r="title" style={{ ['--rd' as string]: 2 }}>
+        {title}
+      </h2>
+      {intro && (
+        <p className="lede mt-4" data-r style={{ ['--rd' as string]: 4 }}>
+          {intro}
+        </p>
+      )}
     </header>
   );
 }
@@ -97,10 +117,12 @@ export function MetricStrip({ items, cols = 4 }: { items: Metric[]; cols?: numbe
         ? 'sm:grid-cols-3'
         : 'sm:grid-cols-2 lg:grid-cols-4';
   return (
-    <dl className={`grid ${grid} border-t border-rule`}>
-      {items.map((m) => (
+    <dl className={`grid ${grid} border-t border-rule`} data-reveal="group">
+      {items.map((m, i) => (
         <div
           key={m.label}
+          data-r
+          style={{ ['--rd' as string]: i }}
           className="border-b border-rule px-0 py-5 sm:border-r sm:px-5 sm:first:pl-0 last:sm:border-r-0"
         >
           <dd
@@ -108,7 +130,7 @@ export function MetricStrip({ items, cols = 4 }: { items: Metric[]; cols?: numbe
               m.tone === 'caution' ? 'text-caution' : 'text-ink'
             }`}
           >
-            {m.value}
+            <CountUp value={m.value} />
           </dd>
           <dt className="mt-2.5 text-micro leading-snug text-ink-2">{m.label}</dt>
           {m.note && <p className="mt-1.5 text-[0.7rem] leading-snug text-ink-3">{m.note}</p>}

@@ -37,7 +37,7 @@ export function LandscapeMap() {
   const height = Math.max(dY(landscape.length), pY(projects.length)) + 24;
 
   return (
-    <div className="scroll-x">
+    <div className="scroll-x" data-reveal="draw">
       <svg
         viewBox={`0 0 ${W} ${height}`}
         style={{ minWidth: 720, width: '100%', height: 'auto', display: 'block' }}
@@ -54,23 +54,40 @@ export function LandscapeMap() {
 
         {/* edges first, so nodes sit above them */}
         {landscape.map((d, di) =>
-          d.projects.map((slug) => {
+          d.projects.map((slug, k) => {
             const pi = pIndex(slug);
             if (pi < 0) return null;
             const y1 = dY(di) + 12;
             const y2 = pY(pi) + 22;
             const on = isEdgeHot(d.id, slug);
             const dim = hot && !on;
+            const path = `M${xD + 14} ${y1} C ${xD + 130} ${y1}, ${xP - 140} ${y2}, ${xP - 14} ${y2}`;
+            // Direction follows the hover: evidence flows toward what you point at.
+            const reverse = hot?.kind === 'domain';
             return (
-              <path
-                key={`${d.id}-${slug}`}
-                d={`M${xD + 14} ${y1} C ${xD + 130} ${y1}, ${xP - 140} ${y2}, ${xP - 14} ${y2}`}
-                fill="none"
-                stroke={on ? '#0E5A63' : '#D2D6D1'}
-                strokeWidth={on ? 1.6 : 1}
-                opacity={dim ? 0.25 : 1}
-                style={{ transition: 'stroke 180ms, opacity 180ms' }}
-              />
+              <g key={`${d.id}-${slug}`}>
+                <path
+                  d={path}
+                  pathLength={100}
+                  className="lm-edge"
+                  style={{ ['--i' as string]: di * 2 + k }}
+                  fill="none"
+                  stroke={on ? '#0E5A63' : '#D2D6D1'}
+                  strokeWidth={on ? 1.6 : 1}
+                  opacity={dim ? 0.25 : 1}
+                />
+                {on && (
+                  <path
+                    d={path}
+                    pathLength={100}
+                    className={`lm-pulse ${reverse ? 'lm-pulse-rev' : ''}`}
+                    fill="none"
+                    stroke="#0E5A63"
+                    strokeWidth={3}
+                    strokeLinecap="round"
+                  />
+                )}
+              </g>
             );
           })
         )}

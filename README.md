@@ -187,6 +187,59 @@ and its leakage caveat in the same breath.
 
 ---
 
+## Motion system
+
+Everything that moves is layered *on top of* the static design — with JavaScript off or
+`prefers-reduced-motion` on, every page renders exactly as described above. There are no
+animation libraries: one shared `requestAnimationFrame` clock, a ~200-line WebGL renderer
+and CSS custom properties. The whole layer adds roughly 33 KB gzipped, of which ~12 KB is
+on the critical path; the WebGL scenes and project traces load lazily near the viewport.
+
+**Two families of movement**, deliberately contrasted (`src/lib/motion.ts`):
+
+- *computational* — eased, exact, deterministic: rules drawing across, reveals, counters,
+  data flowing through a figure
+- *physical* — spring-integrated: magnetic buttons, tilting panels, the cursor's crop
+  marks, nodes bending toward the pointer
+
+**Where things live**
+
+| Path | What it does |
+|---|---|
+| `src/lib/motion.ts` | easing curves, durations, `Spring`, perf-tier and reduced-motion detection |
+| `src/lib/runtime.ts` | the single rAF clock (pauses when idle or hidden), shared pointer and scroll state |
+| `src/lib/gl/` | minimal WebGL renderer (points + hairlines, custom shaders) and matrix helpers |
+| `src/components/motion/enhancers.ts` | delegated listeners that animate server-rendered markup via data attributes |
+| `src/components/motion/cursor.tsx` | dot + spring-driven crop marks; fine pointers only |
+| `src/components/motion/page-transitions.tsx` | View Transitions with shared-element morphs into case studies |
+| `src/components/motion/boot.tsx` | one-second boot log, home page, first visit per session, skippable |
+| `src/components/hero/` | the hero network: tokens → embeddings → model → outputs |
+| `src/components/viz/traces/` | one small live figure per project, built from the case study's own values |
+| `src/components/viz/stack-graph*.tsx` | 3D force-directed skill ↔ project graph from `skillGroups` evidence |
+
+**Data attributes** — server components opt in without becoming client components:
+
+| Attribute | Effect |
+|---|---|
+| `data-reveal` / `data-reveal="group"` + `data-r` | one-shot entrance; children stagger via `--rd` |
+| `data-r="title"` | heading emerges from a slot instead of fading |
+| `data-scroll` | receives `--sp` / `--se` / `--sx` scroll progress (0–1) |
+| `data-sheet` | lifts like a sheet of paper as it scrolls in (needs `data-scroll`) |
+| `data-tilt="4"` + `data-depth` | spring tilt with moving light; `data-depth` children float forward |
+| `data-magnetic="0.3"` | magnetic pull (every `.btn` has it by default) |
+| `data-cursor="open" \| "scene"` + `data-cursor-label` | contextual cursor state |
+| `data-vt-scope` + `data-vt` | elements that morph across a page transition |
+
+**Honesty rule for the traces** — every trace is tagged `schematic`. Names, thresholds and
+figures in them come from the case-study content; motion and intermediate states are
+illustrative. Do not put a number in a trace that is not already on the case-study page.
+
+**Things to find** — `⌘K` / `/` opens a command palette, `G` overlays the layout grid, the
+console has a note, and the Konami code does something to the hero. Press and hold inside
+the hero, too.
+
+---
+
 ## Content model
 
 A project is a `Project` object (`src/lib/types.ts`) with hero metadata plus an array of
@@ -282,6 +335,12 @@ is pinned to `2.15.4` until that is worth doing.
   reader users; no information is hover-only.
 - Diagrams pan horizontally on narrow screens rather than shrinking labels below
   legibility, and the project TOC becomes a disclosure on mobile instead of a squeezed rail.
-- `prefers-reduced-motion` is respected globally.
+- `prefers-reduced-motion` is respected globally: entrance animations, the cursor, page
+  transitions and the boot screen are disabled, and the WebGL scenes and project traces
+  render a single, settled still frame instead of animating.
+- Every animation loop pauses when its element is off screen or the tab is hidden, and
+  particle density steps down on low-core, low-memory, small-screen or Save-Data devices.
+- Touch devices get no custom cursor; the traces respond to press-and-drag and the hero
+  network to taps instead.
 - Charts are client components loaded per-route; diagrams are server-rendered SVG.
 - All 32 routes are statically generated at build time.
