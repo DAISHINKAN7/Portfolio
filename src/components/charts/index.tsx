@@ -83,11 +83,11 @@ export function AstroguardCorpus() {
 
 export function AstroguardTelemetry() {
   const data = [
-    { k: 'Decompose', v: 14.6, d: false },
-    { k: 'Parallel analysis', v: 275.8, d: false },
-    { k: 'Debate R1 · critique', v: 312.3, d: true },
-    { k: 'Debate R2 · refine', v: 240.9, d: true },
-    { k: 'Supervisor synthesis', v: 78.5, d: false },
+    { k: 'Decompose', v: 14.6, debate: false },
+    { k: 'Parallel analysis', v: 275.8, debate: false },
+    { k: 'Debate R1 · critique', v: 312.3, debate: true },
+    { k: 'Debate R2 · refine', v: 240.9, debate: true },
+    { k: 'Supervisor synthesis', v: 78.5, debate: false },
   ];
   return (
     <Shell h={300}>
@@ -98,7 +98,7 @@ export function AstroguardTelemetry() {
         <Tooltip {...tip} formatter={(v: number) => [`${v}s mean`, '']} />
         <Bar dataKey="v" maxBarSize={72}>
           {data.map((d, i) => (
-            <Cell key={i} fill={d.d ? ACCENT : GREY} />
+            <Cell key={i} fill={d.debate ? ACCENT : GREY} />
           ))}
           <LabelList
             dataKey="v"

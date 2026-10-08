@@ -8,8 +8,30 @@ import { ArrowLink, ProvKey, SectionHead } from '@/components/ui';
 import { HeroField } from '@/components/hero/hero-field';
 import { HeroTitle } from '@/components/hero/hero-title';
 import { CountUp } from '@/components/motion/count-up';
+import { Marquee } from '@/components/motion/marquee';
+import { ScrubText } from '@/components/motion/scrub-text';
+import { PortraitLens } from '@/components/hero/portrait-lens';
+import { LatentStage, type Chapter } from '@/components/stage/latent-stage';
 import { StackGraph } from '@/components/viz/stack-graph';
 import type { GEdge, GNode } from '@/components/viz/stack-graph-scene';
+
+/** Captions for the latent stage — all existing copy, in scroll order. */
+const stageChapters: Chapter[] = [
+  { eyebrow: profile.role, title: profile.name, body: profile.positioning },
+  {
+    eyebrow: 'Selected work',
+    title: 'Six systems',
+    body: 'Each of these began somewhere awkward — a dataset that did not exist, a benchmark that was not available, or a target quantity that cannot be observed at all.',
+  },
+  ...projects.map((p, i) => ({
+    eyebrow: `${String(i + 1).padStart(2, '0')} · ${p.domainLine}`,
+    title: p.wordmark,
+    body: p.hook,
+    metric: { value: p.headline.value, label: p.headline.label },
+    href: `/projects/${p.slug}`,
+  })),
+  { eyebrow: '', title: '', body: '' },
+];
 
 /** Skill ↔ project graph, derived from each skill's listed evidence. */
 function stackGraphData() {
@@ -104,6 +126,7 @@ export default function HomePage() {
                   />
                 </div>
                 <span className="hero-scan" aria-hidden />
+                <PortraitLens src={profile.photo} />
               </div>
               <dl className="mt-7 max-w-[17rem] border-t border-rule">
                 {[
@@ -122,6 +145,10 @@ export default function HomePage() {
         </div>
       </section>
 
+      <Marquee items={profile.domains} />
+
+      <LatentStage chapters={stageChapters} photo={profile.photo} />
+
       {/* 02 · Selected work ------------------------------------------- */}
       <section className="shell" id="work">
         <SectionHead
@@ -135,6 +162,10 @@ export default function HomePage() {
           <FeaturedProject key={p.slug} project={p} index={i} flip={i % 2 === 1} />
         ))}
       </section>
+
+      <div className="pt-10">
+        <Marquee items={projects.map((p) => p.wordmark)} reverse speed={32} />
+      </div>
 
       {/* 03 · Engineering landscape ----------------------------------- */}
       <section className="shell pt-20" id="landscape">
@@ -250,9 +281,11 @@ export default function HomePage() {
             <p className="eyebrow" data-r>
               Contact
             </p>
-            <h2 className="display-l mt-5 max-w-2xl" data-r="title" style={{ ['--rd' as string]: 1 }}>
-              If any of this is close to what your team is building, I&apos;d like to hear about it.
-            </h2>
+            <ScrubText
+              as="h2"
+              className="display-l mt-5 max-w-2xl"
+              text="If any of this is close to what your team is building, I'd like to hear about it."
+            />
           </div>
           <div className="flex flex-col justify-end gap-3" data-r style={{ ['--rd' as string]: 3 }}>
             <a href={`mailto:${profile.email}`} className="btn btn-primary justify-center">

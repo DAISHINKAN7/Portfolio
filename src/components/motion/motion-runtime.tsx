@@ -8,6 +8,7 @@ import { Cursor } from './cursor';
 import { PageTransitions } from './page-transitions';
 import { EasterEggs } from './easter-eggs';
 import { runBoot } from './boot';
+import { GridField } from './grid-field';
 
 /** Mounted once in the root layout. Owns every global motion concern. */
 export function MotionRuntime() {
@@ -46,6 +47,7 @@ export function MotionRuntime() {
   return (
     <>
       {env.fine && env.motion && <Cursor />}
+      {env.fine && env.motion && <GridField />}
       {env.motion && <PageTransitions />}
       <EasterEggs motion={env.motion} />
     </>

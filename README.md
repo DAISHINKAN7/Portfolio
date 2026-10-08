@@ -216,6 +216,13 @@ on the critical path; the WebGL scenes and project traces load lazily near the v
 | `src/components/hero/` | the hero network: tokens → embeddings → model → outputs |
 | `src/components/viz/traces/` | one small live figure per project, built from the case study's own values |
 | `src/components/viz/stack-graph*.tsx` | 3D force-directed skill ↔ project graph from `skillGroups` evidence |
+| `src/components/motion/marquee.tsx` | full-bleed kinetic type band; speed and lean follow scroll velocity |
+| `src/components/motion/scrub-text.tsx` | text that is read in word by word as it scrolls up the viewport |
+| `src/components/hero/portrait-lens.tsx` | hover lens over the portrait running a real 3×3 Sobel filter |
+| `src/components/motion/footer-wordmark.tsx` | oversized footer name; letters lift toward the cursor on springs |
+| `src/components/stage/` | the latent stage: one GPU point cloud re-embedded from a stipple of the portrait into six project forms |
+| `src/components/motion/smooth-scroll.ts` | inertial wheel scrolling on fine pointers; everything else stays native |
+| `src/components/motion/grid-field.tsx` | the plotter-paper dot grid, drawn only around the cursor and in click ripples |
 
 **Data attributes** — server components opt in without becoming client components:
 
@@ -317,14 +324,15 @@ is already statically generated — you would need to disable image optimisation
 
 ---
 
-## Known dev-only console warning
+## Chart data keys and Recharts
 
-Running `npm run dev` prints one React warning originating inside Recharts 2.x
-(`Received false for a non-boolean attribute d`) on pages that render charts. It comes
-from the library, not from this codebase — charts render correctly, and it does not
-appear in the production build. Recharts 3.x changes its TypeScript formatter signatures,
-so upgrading requires a small migration in `src/components/charts/index.tsx`; the version
-is pinned to `2.15.4` until that is worth doing.
+Recharts' `LabelList` spreads every field of a data row onto the SVG `<text>` it renders.
+A row field that shares a name with an SVG attribute (`d`, `r`, `fill`, `transform`…)
+therefore leaks into the DOM — a boolean `d` produced the old
+`Received false for a non-boolean attribute d` dev warning. Give chart rows descriptive
+keys (`debate`, `ours`, `value`) rather than single letters. Recharts is pinned to
+`2.15.4`; 3.x changes its TypeScript formatter signatures and needs a small migration in
+`src/components/charts/index.tsx`.
 
 ---
 

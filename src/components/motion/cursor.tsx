@@ -23,6 +23,12 @@ export function Cursor() {
   useEffect(() => {
     const html = document.documentElement;
     html.classList.add('has-cursor');
+    // Captured once: React detaches refs before running effect cleanup, so a
+    // frame or event that lands in between must not read them.
+    const rootEl = root.current!;
+    const frameEl = frame.current!;
+    const dotEl = dot.current!;
+    const labelEl = label.current!;
 
     const x = new Spring(pointer.x, pointer.x, springs.trail);
     const y = new Spring(pointer.y, pointer.y, springs.trail);
@@ -43,7 +49,7 @@ export function Cursor() {
         const kind = ctx.getAttribute('data-cursor');
         mode = kind === 'open' ? 'open' : kind === 'scene' ? 'scene' : 'frame';
         target = mode === 'frame' ? ctx : hit ?? ctx;
-        if (label.current) label.current.textContent = ctx.getAttribute('data-cursor-label') ?? (mode === 'open' ? 'open' : '');
+        labelEl.textContent = ctx.getAttribute('data-cursor-label') ?? (mode === 'open' ? 'open' : '');
       } else if (hit) {
         mode = 'frame';
         target = hit;
@@ -51,7 +57,7 @@ export function Cursor() {
         mode = 'idle';
         target = null;
       }
-      root.current!.dataset.mode = mode;
+      rootEl.dataset.mode = mode;
     };
 
     const tick = (dt: number) => {
@@ -86,10 +92,10 @@ export function Cursor() {
         s.step(dt / 2);
       }
       const p = press.x;
-      frame.current!.style.transform = `translate3d(${(x.x - (w.x * p) / 2).toFixed(2)}px, ${(y.x - (h.x * p) / 2).toFixed(2)}px, 0)`;
-      frame.current!.style.width = `${(w.x * p).toFixed(2)}px`;
-      frame.current!.style.height = `${(h.x * p).toFixed(2)}px`;
-      dot.current!.style.transform = `translate3d(${pointer.x}px, ${pointer.y}px, 0)`;
+      frameEl.style.transform = `translate3d(${(x.x - (w.x * p) / 2).toFixed(2)}px, ${(y.x - (h.x * p) / 2).toFixed(2)}px, 0)`;
+      frameEl.style.width = `${(w.x * p).toFixed(2)}px`;
+      frameEl.style.height = `${(h.x * p).toFixed(2)}px`;
+      dotEl.style.transform = `translate3d(${pointer.x}px, ${pointer.y}px, 0)`;
 
       // Sleep once everything has settled on a still pointer.
       if (all.every((s) => s.resting) && mode !== 'frame') {
@@ -104,7 +110,7 @@ export function Cursor() {
 
     const onMove = (e: PointerEvent) => {
       if (e.pointerType === 'touch') return;
-      root.current!.dataset.visible = 'true';
+      rootEl.dataset.visible = 'true';
       wakeUp();
     };
     const onOver = (e: PointerEvent) => {
@@ -112,7 +118,7 @@ export function Cursor() {
       wakeUp();
     };
     const onLeave = () => {
-      root.current!.dataset.visible = 'false';
+      rootEl.dataset.visible = 'false';
     };
     const onDown = () => wakeUp();
 

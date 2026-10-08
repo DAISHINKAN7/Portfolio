@@ -38,7 +38,7 @@ export default function eco(): Trace {
 
   return {
     still: 5.2,
-    height: (w) => (w < 480 ? 176 : 164),
+    height: (w) => (w < 480 ? 176 : Math.round(Math.min(280, Math.max(164, w * 0.13)))),
     draw(g, w, h, time, _dt, ptr) {
       const t = time % LOOP;
       const left = 34, right = w - 14, top = 20, bot = h - 34;

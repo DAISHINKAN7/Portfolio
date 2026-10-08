@@ -15,6 +15,8 @@ export const profile = {
   siteUrl: 'https://kunal-ajgaonkar-portfolio.vercel.app',
   positioning:
     'I build AI systems where the architecture is the contribution — multi-agent retrieval, multimodal deep learning, spatiotemporal forecasting and domain NLP — and I measure them honestly enough to say where they fail.',
+  // The same four domains as the hero lines, as standalone phrases.
+  domains: ['Multi-agent retrieval', 'Multimodal deep learning', 'Spatiotemporal forecasting', 'Domain NLP'],
   heroLines: [
     'Multi-agent retrieval systems, multimodal deep learning,',
     'spatiotemporal forecasting and domain NLP —',

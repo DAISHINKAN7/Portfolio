@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import type { Metric, Provenance } from '@/lib/types';
 import { CountUp } from './motion/count-up';
+import { ScrubText } from './motion/scrub-text';
 
 /* ------------------------------------------------------------------ */
 /* Provenance — the site's signature device.                           */
@@ -92,11 +93,7 @@ export function SectionHead({
       <h2 className="display-l mt-5 max-w-3xl" data-r="title" style={{ ['--rd' as string]: 2 }}>
         {title}
       </h2>
-      {intro && (
-        <p className="lede mt-4" data-r style={{ ['--rd' as string]: 4 }}>
-          {intro}
-        </p>
-      )}
+      {intro && <ScrubText className="lede mt-4" text={intro} />}
     </header>
   );
 }

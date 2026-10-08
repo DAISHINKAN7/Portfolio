@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { profile } from '@/content/site';
 import { projects } from '@/content/projects';
+import { FooterWordmark } from './motion/footer-wordmark';
 
 export function SiteFooter() {
   const cols = [
@@ -62,6 +63,10 @@ export function SiteFooter() {
             </ul>
           </nav>
         ))}
+      </div>
+
+      <div className="shell">
+        <FooterWordmark text={profile.name} />
       </div>
 
       <div className="border-t border-rule">

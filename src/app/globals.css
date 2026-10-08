@@ -646,16 +646,17 @@ html.booting :is(.hero-letter, .hero-in, .hero-rule, .hero-scan, .hero-photo [da
 
 /* ---- View transitions ------------------------------------------------- */
 @keyframes vt-out {
-  to { opacity: 0; transform: translate3d(0, -28px, 0) scale(0.985); }
+  to { transform: translate3d(0, -6vh, 0) scale(0.94); opacity: 0.35; filter: blur(2px); }
 }
 @keyframes vt-in {
-  from { opacity: 0; transform: translate3d(0, 40px, 0); }
+  from { clip-path: inset(100% 0 0 0); transform: translate3d(0, 8vh, 0); }
+  to { clip-path: inset(0 0 0 0); transform: none; }
 }
 ::view-transition-old(root) {
-  animation: vt-out 260ms var(--ease-in-out) both;
+  animation: vt-out 760ms var(--ease-in-out) both;
 }
 ::view-transition-new(root) {
-  animation: vt-in 620ms var(--ease-out) 170ms both;
+  animation: vt-in 820ms var(--ease-in-out) both;
 }
 ::view-transition-group(vt-title),
 ::view-transition-group(vt-fig) {
@@ -991,6 +992,339 @@ html.boot-out .boot {
 }
 .motion .palette {
   animation: palette-in 360ms var(--ease-out);
+}
+
+/* ---- Kinetic type band --------------------------------------------------- */
+.marquee {
+  position: relative;
+  overflow: hidden;
+  border-block: 1px solid theme('colors.rule');
+  padding-block: clamp(0.75rem, 2vw, 1.5rem);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 8.5vw, 8rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: theme('colors.ink');
+  white-space: nowrap;
+}
+.marquee-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px theme('colors.ink');
+}
+.marquee-node {
+  display: inline-block;
+  width: 0.14em;
+  height: 0.14em;
+  margin-inline: 0.42em;
+  background: theme('colors.accent');
+  border-radius: 50%;
+}
+
+/* ---- Scroll-scrubbed reading --------------------------------------------- */
+.motion .scrub-w {
+  opacity: clamp(0.14, calc((var(--se, 1) * 1.55 - 0.3) * var(--n) - var(--i)), 1);
+  transition: opacity 140ms linear;
+}
+
+/* ---- Giant project index: peeks out from behind the figure ------------- */
+.feature-index {
+  position: absolute;
+  top: clamp(0.5rem, 1.5vw, 1.25rem);
+  right: 0;
+  z-index: -1;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(9rem, 17vw, 16rem);
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1px theme('colors.rule-2');
+  pointer-events: none;
+  user-select: none;
+}
+.feature-index-flip {
+  right: auto;
+  left: 0;
+}
+.motion .feature-index {
+  transform: translate3d(0, calc((var(--sp, 0.5) - 0.5) * -140px), 0);
+}
+@media (max-width: 1023px) {
+  .feature-index {
+    display: none;
+  }
+}
+
+/* ---- Portrait lens: a Sobel convolution under the cursor ------------------ */
+.portrait-lens,
+.portrait-lens-ring {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+}
+.portrait-lens {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  -webkit-mask-image: radial-gradient(circle 74px at var(--lx, 50%) var(--ly, 50%), #000 98%, transparent 100%);
+  mask-image: radial-gradient(circle 74px at var(--lx, 50%) var(--ly, 50%), #000 98%, transparent 100%);
+}
+.portrait-lens-ring {
+  left: var(--lx, 50%);
+  top: var(--ly, 50%);
+  width: 148px;
+  height: 148px;
+  margin: -74px 0 0 -74px;
+  z-index: 3;
+  border: 1px solid theme('colors.accent');
+  border-radius: 50%;
+}
+.portrait-lens-ring span {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 6px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: theme('colors.accent');
+  background: theme('colors.paper');
+  padding: 1px 5px;
+}
+.motion .hero-photo[data-lens='ready'] :is(.portrait-lens, .portrait-lens-ring) {
+  opacity: var(--lift, 0);
+  /* The photo floats forward in the tilted card; the lens must sit in front of it. */
+  transform: translate3d(calc(var(--tx, 0) * -6px), calc(var(--ty, 0) * -4px), calc(var(--lift, 0) * 34px));
+}
+
+/* ---- Footer wordmark ----------------------------------------------------- */
+.wordmark {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+  padding-top: 0.28em;
+  padding-bottom: 0.14em;
+  margin-top: -0.1em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(3.2rem, 13.4vw, 12.6rem);
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  color: theme('colors.ink');
+  user-select: none;
+}
+.wordmark-slot,
+.wordmark-l {
+  display: inline-block;
+}
+.wordmark-l {
+  will-change: transform;
+}
+.motion .wordmark .wordmark-slot {
+  transition: transform 1100ms var(--ease-out), opacity 700ms var(--ease-out);
+  transition-delay: calc(var(--rd) * 60ms);
+}
+.motion .wordmark:not(.is-in) .wordmark-slot {
+  opacity: 1;
+  transform: translate3d(0, 110%, 0);
+}
+
+/* ---- Latent stage: one point cloud, re-embedded ------------------------- */
+.latent {
+  display: none;
+}
+.motion .latent {
+  display: block;
+  position: relative;
+  height: calc(var(--chapters) * 72vh + 100vh);
+}
+.motion .latent[data-failed='true'] {
+  display: none;
+}
+.latent-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+.latent-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1200ms var(--ease-out);
+}
+.latent[data-ready='true'] .latent-canvas {
+  opacity: 1;
+}
+.latent-ui {
+  position: relative;
+  height: 100%;
+  pointer-events: none;
+}
+.latent-cap {
+  position: absolute;
+  left: var(--shell-pad);
+  bottom: clamp(5.5rem, 16vh, 10rem);
+  width: min(36rem, 42%);
+}
+.latent-title {
+  margin-top: 1.1rem;
+}
+.latent-cap a {
+  pointer-events: auto;
+}
+.latent-k {
+  transition: opacity 700ms var(--ease-out), transform 900ms var(--ease-out), clip-path 900ms var(--ease-out);
+  transition-delay: calc(var(--k) * 70ms);
+}
+.latent-cap[data-on='false'] .latent-k {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  clip-path: inset(0 0 100% 0);
+  transition-delay: 0ms;
+  transition-duration: 380ms;
+}
+.latent-cap[data-on='true'] .latent-k {
+  clip-path: inset(-0.3em -0.3em -0.4em -0.3em);
+}
+.latent-hud {
+  position: absolute;
+  right: var(--shell-pad);
+  bottom: clamp(1.5rem, 5vh, 2.75rem);
+  width: min(30rem, 46%);
+  text-align: right;
+}
+.latent-rail {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.1rem;
+  position: relative;
+  padding-bottom: 0.7rem;
+}
+.latent-tick {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  color: theme('colors.ink-3');
+  transition: color 300ms;
+}
+.latent-tick[data-on='true'] {
+  color: theme('colors.accent');
+}
+.latent-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: theme('colors.rule');
+}
+.latent-fill {
+  position: absolute;
+  inset: 0;
+  background: theme('colors.accent');
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+.latent-fig-label,
+.latent-count {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  color: theme('colors.ink-2');
+  margin-top: 0.8rem;
+  min-height: 1em;
+}
+.latent-count {
+  color: theme('colors.ink-3');
+  margin-top: 0.3rem;
+}
+.latent-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: theme('colors.ink-3');
+  transition: opacity 400ms;
+}
+.latent-hint::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 2.2rem;
+  margin: 0.6rem auto 0;
+  background: linear-gradient(theme('colors.ink-3'), transparent);
+  animation: hint-drop 1.8s var(--ease-in-out) infinite;
+  transform-origin: 50% 0;
+}
+@keyframes hint-drop {
+  0% { transform: scaleY(0); opacity: 1; }
+  60% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+.latent:not([data-chapter='0']) .latent-hint {
+  opacity: 0;
+}
+@media (max-width: 1023px) {
+  .motion .latent {
+    height: calc(var(--chapters) * 62vh + 100vh);
+  }
+  .latent-cap {
+    width: auto;
+    right: var(--shell-pad);
+    bottom: 5.25rem;
+  }
+  .latent-cap .display-xl {
+    font-size: clamp(2.2rem, 10vw, 3.2rem);
+  }
+  .latent-cap .lede {
+    font-size: 0.95rem;
+  }
+  .latent-cap .latent-k:nth-child(4) {
+    display: none;
+  }
+  .latent-hud {
+    width: auto;
+    left: var(--shell-pad);
+    bottom: 1.25rem;
+  }
+  .latent-fig-label,
+  .latent-count,
+  .latent-hint {
+    display: none;
+  }
+}
+
+/* ---- Plotter-paper field ---------------------------------------------- */
+.grid-field {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* ---- Odometer digits ------------------------------------------------- */
