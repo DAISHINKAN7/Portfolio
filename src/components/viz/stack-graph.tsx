@@ -29,6 +29,9 @@ export function StackGraph({ nodes, edges }: { nodes: GNode[]; edges: GEdge[] })
     const still = prefersReducedMotion();
     const tier = perfTier();
     const projLabels = Array.from(labelBox.current!.querySelectorAll<HTMLElement>('[data-node]'));
+    // Captured once: React detaches refs before running effect cleanup, so a
+    // frame that lands in between must not read them.
+    const tipEl = tip.current!;
 
     const size = () => {
       const r = cv.getBoundingClientRect();
@@ -44,7 +47,7 @@ export function StackGraph({ nodes, edges }: { nodes: GNode[]; edges: GEdge[] })
         lb.style.opacity = String(0.55 + Math.min(1, n.hl) * 0.45);
       });
       const h = scene.hovered();
-      const t = tip.current!;
+      const t = tipEl;
       if (h && h.kind === 'skill') {
         t.textContent = h.label;
         t.style.transform = `translate3d(${h.sx.toFixed(1)}px, ${h.sy.toFixed(1)}px, 0)`;
