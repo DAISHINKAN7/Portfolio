@@ -48,6 +48,6 @@ DEPLOY IN FIVE MINUTES (Vercel)
   5.  Copy that URL into src/content/site.ts -> profile.siteUrl
   6.  git commit -am "set siteUrl" && npx vercel --prod
 
-NOTE: `npm run dev` prints one warning from the Recharts library
-("non-boolean attribute d"). It is cosmetic, comes from the library not this
-code, and does not appear in the production build. Safe to ignore.
+NOTE: `npm run dev` should start with a clean console. If a chart ever
+shows "non-boolean attribute ...", a chart data row uses a key that clashes
+with an SVG attribute (see README, "Chart data keys and Recharts").

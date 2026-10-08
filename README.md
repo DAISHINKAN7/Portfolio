@@ -317,14 +317,15 @@ is already statically generated — you would need to disable image optimisation
 
 ---
 
-## Known dev-only console warning
+## Chart data keys and Recharts
 
-Running `npm run dev` prints one React warning originating inside Recharts 2.x
-(`Received false for a non-boolean attribute d`) on pages that render charts. It comes
-from the library, not from this codebase — charts render correctly, and it does not
-appear in the production build. Recharts 3.x changes its TypeScript formatter signatures,
-so upgrading requires a small migration in `src/components/charts/index.tsx`; the version
-is pinned to `2.15.4` until that is worth doing.
+Recharts' `LabelList` spreads every field of a data row onto the SVG `<text>` it renders.
+A row field that shares a name with an SVG attribute (`d`, `r`, `fill`, `transform`…)
+therefore leaks into the DOM — a boolean `d` produced the old
+`Received false for a non-boolean attribute d` dev warning. Give chart rows descriptive
+keys (`debate`, `ours`, `value`) rather than single letters. Recharts is pinned to
+`2.15.4`; 3.x changes its TypeScript formatter signatures and needs a small migration in
+`src/components/charts/index.tsx`.
 
 ---
 
