@@ -216,6 +216,10 @@ on the critical path; the WebGL scenes and project traces load lazily near the v
 | `src/components/hero/` | the hero network: tokens → embeddings → model → outputs |
 | `src/components/viz/traces/` | one small live figure per project, built from the case study's own values |
 | `src/components/viz/stack-graph*.tsx` | 3D force-directed skill ↔ project graph from `skillGroups` evidence |
+| `src/components/motion/marquee.tsx` | full-bleed kinetic type band; speed and lean follow scroll velocity |
+| `src/components/motion/scrub-text.tsx` | text that is read in word by word as it scrolls up the viewport |
+| `src/components/hero/portrait-lens.tsx` | hover lens over the portrait running a real 3×3 Sobel filter |
+| `src/components/motion/footer-wordmark.tsx` | oversized footer name; letters lift toward the cursor on springs |
 
 **Data attributes** — server components opt in without becoming client components:
 

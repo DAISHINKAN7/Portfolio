@@ -993,6 +993,156 @@ html.boot-out .boot {
   animation: palette-in 360ms var(--ease-out);
 }
 
+/* ---- Kinetic type band --------------------------------------------------- */
+.marquee {
+  position: relative;
+  overflow: hidden;
+  border-block: 1px solid theme('colors.rule');
+  padding-block: clamp(0.75rem, 2vw, 1.5rem);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 8.5vw, 8rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: theme('colors.ink');
+  white-space: nowrap;
+}
+.marquee-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px theme('colors.ink');
+}
+.marquee-node {
+  display: inline-block;
+  width: 0.14em;
+  height: 0.14em;
+  margin-inline: 0.42em;
+  background: theme('colors.accent');
+  border-radius: 50%;
+}
+
+/* ---- Scroll-scrubbed reading --------------------------------------------- */
+.motion .scrub-w {
+  opacity: clamp(0.14, calc((var(--se, 1) * 1.55 - 0.3) * var(--n) - var(--i)), 1);
+  transition: opacity 140ms linear;
+}
+
+/* ---- Giant project index: peeks out from behind the figure ------------- */
+.feature-index {
+  position: absolute;
+  top: clamp(0.5rem, 1.5vw, 1.25rem);
+  right: 0;
+  z-index: -1;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(9rem, 17vw, 16rem);
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1px theme('colors.rule-2');
+  pointer-events: none;
+  user-select: none;
+}
+.feature-index-flip {
+  right: auto;
+  left: 0;
+}
+.motion .feature-index {
+  transform: translate3d(0, calc((var(--sp, 0.5) - 0.5) * -140px), 0);
+}
+@media (max-width: 1023px) {
+  .feature-index {
+    display: none;
+  }
+}
+
+/* ---- Portrait lens: a Sobel convolution under the cursor ------------------ */
+.portrait-lens,
+.portrait-lens-ring {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+}
+.portrait-lens {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  -webkit-mask-image: radial-gradient(circle 74px at var(--lx, 50%) var(--ly, 50%), #000 98%, transparent 100%);
+  mask-image: radial-gradient(circle 74px at var(--lx, 50%) var(--ly, 50%), #000 98%, transparent 100%);
+}
+.portrait-lens-ring {
+  left: var(--lx, 50%);
+  top: var(--ly, 50%);
+  width: 148px;
+  height: 148px;
+  margin: -74px 0 0 -74px;
+  z-index: 3;
+  border: 1px solid theme('colors.accent');
+  border-radius: 50%;
+}
+.portrait-lens-ring span {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 6px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: theme('colors.accent');
+  background: theme('colors.paper');
+  padding: 1px 5px;
+}
+.motion .hero-photo[data-lens='ready'] :is(.portrait-lens, .portrait-lens-ring) {
+  opacity: var(--lift, 0);
+  /* The photo floats forward in the tilted card; the lens must sit in front of it. */
+  transform: translate3d(calc(var(--tx, 0) * -6px), calc(var(--ty, 0) * -4px), calc(var(--lift, 0) * 34px));
+}
+
+/* ---- Footer wordmark ----------------------------------------------------- */
+.wordmark {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+  padding-top: 0.28em;
+  padding-bottom: 0.14em;
+  margin-top: -0.1em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(3.2rem, 13.4vw, 12.6rem);
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  color: theme('colors.ink');
+  user-select: none;
+}
+.wordmark-slot,
+.wordmark-l {
+  display: inline-block;
+}
+.wordmark-l {
+  will-change: transform;
+}
+.motion .wordmark .wordmark-slot {
+  transition: transform 1100ms var(--ease-out), opacity 700ms var(--ease-out);
+  transition-delay: calc(var(--rd) * 60ms);
+}
+.motion .wordmark:not(.is-in) .wordmark-slot {
+  opacity: 1;
+  transform: translate3d(0, 110%, 0);
+}
+
 /* ---- Odometer digits ------------------------------------------------- */
 .count {
   font-variant-numeric: tabular-nums;

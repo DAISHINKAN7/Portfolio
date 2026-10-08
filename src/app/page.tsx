@@ -8,6 +8,9 @@ import { ArrowLink, ProvKey, SectionHead } from '@/components/ui';
 import { HeroField } from '@/components/hero/hero-field';
 import { HeroTitle } from '@/components/hero/hero-title';
 import { CountUp } from '@/components/motion/count-up';
+import { Marquee } from '@/components/motion/marquee';
+import { ScrubText } from '@/components/motion/scrub-text';
+import { PortraitLens } from '@/components/hero/portrait-lens';
 import { StackGraph } from '@/components/viz/stack-graph';
 import type { GEdge, GNode } from '@/components/viz/stack-graph-scene';
 
@@ -104,6 +107,7 @@ export default function HomePage() {
                   />
                 </div>
                 <span className="hero-scan" aria-hidden />
+                <PortraitLens src={profile.photo} />
               </div>
               <dl className="mt-7 max-w-[17rem] border-t border-rule">
                 {[
@@ -122,6 +126,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <Marquee items={profile.domains} />
+
       {/* 02 · Selected work ------------------------------------------- */}
       <section className="shell" id="work">
         <SectionHead
@@ -135,6 +141,10 @@ export default function HomePage() {
           <FeaturedProject key={p.slug} project={p} index={i} flip={i % 2 === 1} />
         ))}
       </section>
+
+      <div className="pt-10">
+        <Marquee items={projects.map((p) => p.wordmark)} reverse speed={32} />
+      </div>
 
       {/* 03 · Engineering landscape ----------------------------------- */}
       <section className="shell pt-20" id="landscape">
@@ -250,9 +260,11 @@ export default function HomePage() {
             <p className="eyebrow" data-r>
               Contact
             </p>
-            <h2 className="display-l mt-5 max-w-2xl" data-r="title" style={{ ['--rd' as string]: 1 }}>
-              If any of this is close to what your team is building, I&apos;d like to hear about it.
-            </h2>
+            <ScrubText
+              as="h2"
+              className="display-l mt-5 max-w-2xl"
+              text="If any of this is close to what your team is building, I'd like to hear about it."
+            />
           </div>
           <div className="flex flex-col justify-end gap-3" data-r style={{ ['--rd' as string]: 3 }}>
             <a href={`mailto:${profile.email}`} className="btn btn-primary justify-center">

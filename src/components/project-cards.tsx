@@ -4,6 +4,7 @@ import type { Project } from '@/lib/types';
 import { Diagram } from './blocks';
 import { ArrowLink, Prov } from './ui';
 import { CountUp } from './motion/count-up';
+import { ScrubText } from './motion/scrub-text';
 import { ProjectTrace } from './viz/project-trace';
 
 const STATUS: Record<Project['statusTone'], string> = {
@@ -15,8 +16,11 @@ const STATUS: Record<Project['statusTone'], string> = {
 /** Homepage editorial feature. Alternates side so the run doesn't read as a grid. */
 export function FeaturedProject({ project: p, index, flip }: { project: Project; index: number; flip: boolean }) {
   return (
-    <article className="relative py-14 lg:py-20" data-vt-scope={p.slug} data-reveal="group">
+    <article className="relative isolate py-14 lg:py-20" data-vt-scope={p.slug} data-reveal="group" data-scroll>
       <span className="reveal-rule" aria-hidden />
+      <span className={`feature-index ${flip ? 'feature-index-flip' : ''}`} aria-hidden>
+        {String(index + 1).padStart(2, '0')}
+      </span>
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
         <div className={`min-w-0 ${flip ? 'lg:order-2' : ''}`}>
           <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2" data-r>
@@ -28,9 +32,7 @@ export function FeaturedProject({ project: p, index, flip }: { project: Project;
               {p.name}
             </Link>
           </h3>
-          <p className="mt-3 text-[1.0625rem] leading-relaxed text-ink" data-r style={{ ['--rd' as string]: 2 }}>
-            {p.hook}
-          </p>
+          <ScrubText className="mt-3 text-[1.0625rem] leading-relaxed text-ink" text={p.hook} />
           <p className="mt-4 max-w-measure text-[0.9375rem] leading-relaxed text-ink-2" data-r style={{ ['--rd' as string]: 3 }}>
             {p.summary}
           </p>

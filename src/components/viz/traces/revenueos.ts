@@ -20,13 +20,14 @@ const LOOP = 6;
 export default function revenueos(): Trace {
   return {
     still: 3.3,
-    height: (w) => (w < 480 ? 196 : 168),
+    height: (w) => (w < 480 ? 196 : w >= 820 ? Math.round(Math.min(300, Math.max(206, w * 0.17))) : 168),
     draw(g, w, h, time, _dt, ptr) {
       const t = time % LOOP;
       const narrow = w < 480;
-      const laneY = 30;
-      const boundY = 62;
-      const chainY = 104;
+      // Vertical bands scale with the figure so taller layouts stay balanced.
+      const laneY = Math.max(30, h * 0.18);
+      const boundY = Math.max(62, h * 0.37);
+      const chainY = Math.max(104, h * 0.62);
       const x0 = 12;
       const sw = (w - 24) / CHAIN.length;
 
@@ -37,7 +38,8 @@ export default function revenueos(): Trace {
 
       // The boundary: structural, not a filter.
       line(g, x0, boundY, w - 12, boundY, P.caution, 1, [5, 4]);
-      label(g, 'authority boundary · no tool accepts money', w - 12, boundY - 6, P.caution, 'right', 8);
+      if (w >= 820) label(g, 'authority boundary', x0, boundY - 6, P.caution, 'left', 8);
+      else label(g, 'authority boundary · no tool accepts money', w - 12, boundY - 6, P.caution, 'right', 8);
 
       // Tool proposals drop down as names only.
       const pProp = seg(t, 0.1, 0.9);
@@ -50,15 +52,47 @@ export default function revenueos(): Trace {
         box(g, px - 3, py - 3, 6, 6, P.white, P.ink2);
       }
 
-      // An attempted monetary argument, bounced at the boundary.
-      const pAtt = seg(t, 2.6, 3.6);
-      if (pAtt > 0 && pAtt < 1) {
-        const k = pAtt < 0.5 ? pAtt * 2 : 1 - (pAtt - 0.5) * 2;
-        const ax = x0 + (narrow ? 140 : 190) + pAtt * 40;
-        const ay = laneY + (boundY - 6 - laneY) * k;
-        box(g, ax - 18, ay - 7, 36, 14, P.cautionSoft, P.caution);
-        text(g, '₹ amt', ax, ay + 3.5, { mono: true, size: 8.5, color: P.caution, align: 'center' });
-        if (pAtt > 0.45) label(g, 'rejected · argument screening', ax + 26, boundY - 14 + 26, P.caution, 'left', 8);
+      // An attempted monetary argument meets the three independent defences
+      // (from the boundary diagram): it passes the schema and state checks
+      // and is screened out at the argument check.
+      const wide = w >= 820;
+      if (wide) {
+        const gates = [
+          { x: w * 0.4, k: 'schema', d: 'literal tool names only' },
+          { x: w * 0.58, k: 'state gating', d: 'valid in one state only' },
+          { x: w * 0.76, k: 'argument screening', d: 'no amount · probability · EV' },
+        ];
+        const pAtt = seg(t, 2.0, 4.4);
+        const travel = Math.min(1, pAtt / 0.7);
+        const sx = x0 + 170;
+        const ax = sx + (gates[2].x - sx) * travel;
+        line(g, sx, laneY, gates[2].x, laneY, P.rule, 1, [2, 4]);
+        gates.forEach((gt, i) => {
+          const reached = pAtt > 0 && ax >= gt.x - 2;
+          const reject = i === 2 && reached && pAtt < 1;
+          box(g, gt.x - 64, boundY - 11, 128, 22, reject ? P.cautionSoft : P.white, reject ? P.caution : reached && pAtt < 1 ? P.accent : P.rule2);
+          text(g, gt.k, gt.x, boundY + 4, { mono: true, size: 9.5, color: reject ? P.caution : P.ink2, align: 'center' });
+          label(g, gt.d, gt.x, boundY + 26, P.ink3, 'center', 7.5);
+          if (reached && i < 2 && pAtt < 1) label(g, 'pass', gt.x, laneY - 12, P.accent, 'center', 7.5);
+        });
+        if (pAtt > 0 && pAtt < 1) {
+          // Arrive, dip toward the boundary, get pushed back up.
+          const dip = pAtt > 0.7 ? Math.sin(((pAtt - 0.7) / 0.3) * Math.PI) : 0;
+          const ay = laneY + (boundY - 18 - laneY) * dip;
+          box(g, ax - 20, ay - 7, 40, 14, P.cautionSoft, P.caution);
+          text(g, '₹ amt', ax, ay + 3.5, { mono: true, size: 8.5, color: P.caution, align: 'center' });
+          if (pAtt > 0.78) label(g, 'rejected', ax + 28, ay + 3, P.caution, 'left', 8);
+        }
+      } else {
+        const pAtt = seg(t, 2.6, 3.6);
+        if (pAtt > 0 && pAtt < 1) {
+          const k = pAtt < 0.5 ? pAtt * 2 : 1 - (pAtt - 0.5) * 2;
+          const ax = x0 + (narrow ? 140 : 190) + pAtt * 40;
+          const ay = laneY + (boundY - 6 - laneY) * k;
+          box(g, ax - 18, ay - 7, 36, 14, P.cautionSoft, P.caution);
+          text(g, '₹ amt', ax, ay + 3.5, { mono: true, size: 8.5, color: P.caution, align: 'center' });
+          if (pAtt > 0.45) label(g, 'rejected · argument screening', ax + 26, boundY - 14 + 26, P.caution, 'left', 8);
+        }
       }
 
       // The chain.

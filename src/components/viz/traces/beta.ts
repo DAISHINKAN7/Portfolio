@@ -29,7 +29,7 @@ function series(offset: number): Day[] {
 export default function beta(): Trace {
   return {
     still: 6,
-    height: (w) => (w < 480 ? 176 : 164),
+    height: (w) => (w < 480 ? 176 : Math.round(Math.min(280, Math.max(164, w * 0.13)))),
     draw(g, w, h, time, _dt, ptr) {
       const off = Math.floor(time * SPEED);
       const frac = time * SPEED - off;

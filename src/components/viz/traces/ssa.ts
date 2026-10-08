@@ -1,4 +1,4 @@
-import { P, type Trace, curve, label, seg, smooth, text } from '../trace-kit';
+import { P, type Trace, curve, label, line, seg, smooth, text } from '../trace-kit';
 
 /**
  * The verbatim probe sentence from the evaluation transcript, tagged by the
@@ -36,22 +36,25 @@ const LOOP = 8;
 export default function ssa(): Trace {
   return {
     still: 6.2,
-    height: (w) => (w < 480 ? 230 : 196),
+    height: (w) => (w < 480 ? 230 : Math.round(Math.min(320, Math.max(196, w * 0.16)))),
     draw(g, w, h, time, _dt, ptr) {
       const t = time % LOOP;
       const narrow = w < 480;
-      const fs = narrow ? 10 : 11.5;
+      // Wide: sentence on the left half, knowledge graph on the right half.
+      const wide = w >= 820;
+      const fs = narrow ? 10 : wide ? Math.min(19, Math.max(13, w / 62)) : 11.5;
+      const textRight = wide ? w * 0.5 : w - 12;
       g.font = `500 ${fs}px "IBM Plex Sans", sans-serif`;
       const gap = narrow ? 5 : 7;
 
       // Lay the sentence out, wrapping if needed.
       const pos: { x: number; y: number; w: number }[] = [];
-      let x = 12, y = 34;
+      let x = 12, y = wide ? 40 + fs : 34;
       for (const tk of TOKS) {
         const tw = g.measureText(tk.t).width;
-        if (x + tw > w - 12) {
+        if (x + tw > textRight) {
           x = 12;
-          y += 40;
+          y += wide ? fs * 3.6 : 40;
         }
         pos.push({ x, y, w: tw });
         x += tw + gap;
@@ -83,7 +86,8 @@ export default function ssa(): Trace {
           text(g, tk.t, p.x, p.y, { size: fs, weight: 500, color: P.ink });
           g.globalAlpha = pTag * fade;
           // Alternate rows so long labels on short tokens never collide.
-          label(g, tk.l.replace('_', ' '), p.x - 3, p.y + (tk.id! % 2 ? 27 : 17), c, 'left', 7.5);
+          const lf = wide ? Math.max(7.5, fs * 0.48) : 7.5;
+          label(g, tk.l.replace('_', ' '), p.x - 3, p.y + (tk.id! % 2 ? 9 + lf * 2.4 : 9 + lf), c, 'left', lf);
         } else {
           text(g, tk.t, p.x, p.y, { size: fs, color: P.ink3 });
         }
@@ -91,11 +95,18 @@ export default function ssa(): Trace {
       });
 
       // Graph: entities lift from the sentence into a small KG.
-      const gy0 = rowsBottom + 8;
-      const gh = h - gy0 - 18;
+      const gy0 = wide ? 34 : rowsBottom + 8;
+      const gh = h - gy0 - (wide ? 30 : 18);
+      // Graph positions as fractions of the graph area; wide maps them into the right half.
       const cxs = narrow ? [0.18, 0.84, 0.82, 0.5, 0.16] : [0.14, 0.86, 0.84, 0.5, 0.18];
       const cys = [0.25, 0.22, 0.86, 0.55, 0.9];
-      const node = (id: number) => [cxs[id] * w, gy0 + cys[id] * gh] as const;
+      const gx0 = wide ? w * 0.58 : 0;
+      const gw = wide ? w * 0.38 : w;
+      const node = (id: number) => [gx0 + cxs[id] * gw, gy0 + cys[id] * gh] as const;
+      if (wide) {
+        line(g, w * 0.54, 26, w * 0.54, h - 26, P.rule, 1, [2, 4]);
+        label(g, 'knowledge graph · typed relations', gx0, 18);
+      }
       const ents = TOKS.filter((tk) => tk.id !== undefined);
 
       if (pLift > 0) {
