@@ -11,8 +11,27 @@ import { CountUp } from '@/components/motion/count-up';
 import { Marquee } from '@/components/motion/marquee';
 import { ScrubText } from '@/components/motion/scrub-text';
 import { PortraitLens } from '@/components/hero/portrait-lens';
+import { LatentStage, type Chapter } from '@/components/stage/latent-stage';
 import { StackGraph } from '@/components/viz/stack-graph';
 import type { GEdge, GNode } from '@/components/viz/stack-graph-scene';
+
+/** Captions for the latent stage — all existing copy, in scroll order. */
+const stageChapters: Chapter[] = [
+  { eyebrow: profile.role, title: profile.name, body: profile.positioning },
+  {
+    eyebrow: 'Selected work',
+    title: 'Six systems',
+    body: 'Each of these began somewhere awkward — a dataset that did not exist, a benchmark that was not available, or a target quantity that cannot be observed at all.',
+  },
+  ...projects.map((p, i) => ({
+    eyebrow: `${String(i + 1).padStart(2, '0')} · ${p.domainLine}`,
+    title: p.wordmark,
+    body: p.hook,
+    metric: { value: p.headline.value, label: p.headline.label },
+    href: `/projects/${p.slug}`,
+  })),
+  { eyebrow: '', title: '', body: '' },
+];
 
 /** Skill ↔ project graph, derived from each skill's listed evidence. */
 function stackGraphData() {
@@ -127,6 +146,8 @@ export default function HomePage() {
       </section>
 
       <Marquee items={profile.domains} />
+
+      <LatentStage chapters={stageChapters} photo={profile.photo} />
 
       {/* 02 · Selected work ------------------------------------------- */}
       <section className="shell" id="work">

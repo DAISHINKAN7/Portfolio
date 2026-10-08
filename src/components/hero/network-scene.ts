@@ -160,6 +160,7 @@ export function createNetworkScene(canvas: HTMLCanvasElement, tier: PerfTier, co
   let morphT = -1;
   let wasHeld = false;
   let morphW = 0;
+  let born = -1; // first frame time: the network assembles from here
 
   const fire = (i: number, strength = 1) => {
     const n = nodes[i];
@@ -218,7 +219,15 @@ export function createNetworkScene(canvas: HTMLCanvasElement, tier: PerfTier, co
   };
 
   /* ---------------- frame ---------------- */
+  // Build-in: each node surfaces on its layer's schedule, edges grow after.
+  const appear = (nd: Node, age: number, lag = 0) => {
+    const k = clamp((age - (0.15 + nd.layer * 0.34 + (nd.phase / 6.283) * 0.22 + lag)) / 0.5);
+    return k * k * (3 - 2 * k);
+  };
+
   const frame = (dt: number, t: number) => {
+    if (born < 0) born = t;
+    const age = t - born;
     const aspect = W / H;
     const fov = 0.62;
     const dist = 11.5 - scrollP * 5.5;
@@ -301,7 +310,7 @@ export function createNetworkScene(canvas: HTMLCanvasElement, tier: PerfTier, co
 
     // Spawn queries: from under the pointer if it's here, else from a token.
     spawnT -= dt;
-    if (spawnT <= 0 && morphT < 0) {
+    if (spawnT <= 0 && morphT < 0 && age > 1.9) {
       let src = -1;
       if (pointer.inside) src = nearestNode(pointer.x, pointer.y, 220);
       if (src < 0) src = byLayer[0][Math.floor(rand() * byLayer[0].length)];
@@ -345,16 +354,17 @@ export function createNetworkScene(canvas: HTMLCanvasElement, tier: PerfTier, co
     let li = 0;
     for (const e of edges) {
       const A = nodes[e.a], B = nodes[e.b];
+      const grow = age < 3 ? appear(A, age, 0.3) : 1;
       const hot = e.heat;
       const base = e.lateral ? 0.2 : 0.28;
-      const a = (base + hot * 0.55 + (A.att + B.att) * 0.18) * netA;
+      const a = (base + hot * 0.55 + (A.att + B.att) * 0.18) * netA * grow;
       const h = Math.min(1, hot * 1.4);
       const cr = RGB.rule2[0] + (RGB.accent[0] - RGB.rule2[0]) * h;
       const cg = RGB.rule2[1] + (RGB.accent[1] - RGB.rule2[1]) * h;
       const cb = RGB.rule2[2] + (RGB.accent[2] - RGB.rule2[2]) * h;
       lns[li] = A.x; lns[li + 1] = A.y; lns[li + 2] = A.z;
       lns[li + 3] = cr; lns[li + 4] = cg; lns[li + 5] = cb; lns[li + 6] = a;
-      lns[li + 7] = B.x; lns[li + 8] = B.y; lns[li + 9] = B.z;
+      lns[li + 7] = A.x + (B.x - A.x) * grow; lns[li + 8] = A.y + (B.y - A.y) * grow; lns[li + 9] = A.z + (B.z - A.z) * grow;
       lns[li + 10] = cr; lns[li + 11] = cg; lns[li + 12] = cb; lns[li + 13] = a;
       li += 14;
     }
@@ -375,7 +385,7 @@ export function createNetworkScene(canvas: HTMLCanvasElement, tier: PerfTier, co
       d.y = fy + (d.ty - fy) * m;
       d.z = d.oz + (d.tz - d.oz) * m;
       const shimmer = m > 0 ? 0.5 + 0.5 * Math.sin(t * 3 + d.ph * 2) : 0;
-      put(d.x, d.y, d.z, 1.6 + m * 3.4, m > 0.5 ? mix(RGB.ink, RGB.accent, shimmer * 0.7) : RGB.ink3, (0.16 + m * 0.74) * fade, 0);
+      put(d.x, d.y, d.z, 1.6 + m * 3.4, m > 0.5 ? mix(RGB.ink, RGB.accent, shimmer * 0.7) : RGB.ink3, (0.16 + m * 0.74) * fade * clamp(age / 1.6), 0);
     }
 
     nodes.forEach((n) => {
@@ -383,7 +393,8 @@ export function createNetworkScene(canvas: HTMLCanvasElement, tier: PerfTier, co
       const col = act > 0.04 || n.att > 0.05 ? mix(RGB.ink, RGB.accent, Math.min(1, act * 1.3 + n.att * 0.7)) : RGB.ink;
       const shape = n.layer === 0 ? 1 : n.layer === 3 ? 2 : 0;
       const size = (n.layer === 3 ? 11 : n.layer === 0 ? 6 : 5) + act * 3.5 + n.att * 3;
-      put(n.x, n.y, n.z, size, col, (0.62 + act * 0.38) * netA, shape);
+      const vis = age < 3 ? appear(n, age) : 1;
+      put(n.x, n.y, n.z, size * (0.4 + vis * 0.6), col, (0.62 + act * 0.38) * netA * vis, shape);
     });
 
     for (const rp of ripples) {

@@ -85,7 +85,7 @@ export function HeroField() {
       wrap.current!.dataset.ready = 'true';
       if (still) {
         // Settle the springs off-screen, then draw once.
-        for (let i = 0; i < 140; i++) scene.frame(1 / 60, 4 + i / 60);
+        for (let i = 0; i < 200; i++) scene.frame(1 / 60, 4 + i / 60);
         placeLabels();
       } else run();
     });
@@ -99,7 +99,7 @@ export function HeroField() {
 
     const ro = new ResizeObserver(() => {
       size();
-      if (still && scene) scene.frame(0, 4);
+      if (still && scene) scene.frame(0, 100); // well past the build-in
     });
     ro.observe(cv);
 

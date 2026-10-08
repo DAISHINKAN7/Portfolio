@@ -220,6 +220,9 @@ on the critical path; the WebGL scenes and project traces load lazily near the v
 | `src/components/motion/scrub-text.tsx` | text that is read in word by word as it scrolls up the viewport |
 | `src/components/hero/portrait-lens.tsx` | hover lens over the portrait running a real 3×3 Sobel filter |
 | `src/components/motion/footer-wordmark.tsx` | oversized footer name; letters lift toward the cursor on springs |
+| `src/components/stage/` | the latent stage: one GPU point cloud re-embedded from a stipple of the portrait into six project forms |
+| `src/components/motion/smooth-scroll.ts` | inertial wheel scrolling on fine pointers; everything else stays native |
+| `src/components/motion/grid-field.tsx` | the plotter-paper dot grid, drawn only around the cursor and in click ripples |
 
 **Data attributes** — server components opt in without becoming client components:
 

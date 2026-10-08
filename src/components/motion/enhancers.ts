@@ -13,6 +13,7 @@
  */
 import { Spring, springs } from '@/lib/motion';
 import { onTick } from '@/lib/runtime';
+import { initSmoothScroll } from './smooth-scroll';
 
 type Cleanup = () => void;
 
@@ -298,6 +299,6 @@ function reveal(): Cleanup {
 export function initEnhancers({ fine, motion }: { fine: boolean; motion: boolean }): Cleanup {
   const fns: Cleanup[] = [];
   if (motion) fns.push(reveal());
-  if (motion && fine) fns.push(magnetic(), tilt());
+  if (motion && fine) fns.push(magnetic(), tilt(), initSmoothScroll());
   return () => fns.forEach((f) => f());
 }
